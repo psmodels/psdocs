@@ -1,0 +1,122 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>VSC 3-wire with L-Filter &#8212; psdocs 0 documentation</title>
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="(Doing) VSC 3-wire with LCL-Filter" href="lcl_filter.html" />
+    <link rel="prev" title="Voltage Source Conveter (VSC)" href="vsc.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>psdocs 0 documentation</span></a></h1>
+        <h2 class="heading"><span>VSC 3-wire with L-Filter</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="vsc.html">Voltage Source Conveter (VSC)</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="lcl_filter.html">(Doing) VSC 3-wire with LCL-Filter</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="vsc-3-wire-with-l-filter">
+<h1>VSC 3-wire with L-Filter<a class="headerlink" href="#vsc-3-wire-with-l-filter" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>[i_sd,i_sq,v_dc,dx] <span class="p">=</span><span class="w"> </span><span class="nf">vsc_l_dq</span><span class="p">(</span>v_sd,v_sq,omega,params,x<span class="p">)</span><span class="w"></span>
+
+<span class="c">% parameters</span>
+<span class="n">R_s</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">L_s</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c">% from the integrator to the states</span>
+<span class="n">i_d</span>  <span class="p">=</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">i_q</span>  <span class="p">=</span> <span class="n">x</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">v_dc</span> <span class="p">=</span> <span class="n">x</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+
+
+<span class="c">% derivatives</span>
+<span class="n">di_sd</span>  <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">L_s</span><span class="o">*</span><span class="p">(</span><span class="n">v_sd</span> <span class="o">+</span> <span class="n">L_s</span><span class="o">*</span><span class="n">omega</span><span class="o">*</span><span class="n">i_sq</span> <span class="o">-</span> <span class="n">R_s</span><span class="o">*</span><span class="n">i_sd</span> <span class="o">-</span> <span class="n">v_sd</span><span class="p">);</span>
+<span class="n">di_sq</span>  <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">L_s</span><span class="o">*</span><span class="p">(</span><span class="n">v_sq</span> <span class="o">-</span> <span class="n">L_s</span><span class="o">*</span><span class="n">omega</span><span class="o">*</span><span class="n">i_sd</span> <span class="o">-</span> <span class="n">R_s</span><span class="o">*</span><span class="n">i_sq</span> <span class="o">-</span> <span class="n">v_sq</span><span class="p">);</span>
+<span class="n">dv_dc</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">C_dc</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">eta_d</span> <span class="o">*</span><span class="n">i_sd</span>  <span class="o">+</span> <span class="n">eta_q</span> <span class="o">*</span> <span class="n">i_sq</span>  <span class="o">-</span> <span class="n">i_dc</span> <span class="p">)</span>
+
+<span class="c">% from derivatives to the integrator</span>
+<span class="n">dx</span> <span class="p">=</span> <span class="p">[</span><span class="n">di_sd</span><span class="p">,</span><span class="n">di_sq</span><span class="p">,</span><span class="n">dv_dc</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="control-ctrl1-vsc-3-wire">
+<h1>Control CTRL1 VSC 3-wire<a class="headerlink" href="#control-ctrl1-vsc-3-wire" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>[eta_d,eta_q,dx] <span class="p">=</span><span class="w"> </span><span class="nf">vsc_l_dq</span><span class="p">(</span>i_sd_ref,i_sq_ref,i_sd,i_sq,v_dc,omega,params,x<span class="p">)</span><span class="w"></span>
+
+<span class="c">% parameters</span>
+<span class="n">R_s</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">L_s</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">K_p</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">K_i</span> <span class="p">=</span> <span class="n">params</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+
+<span class="c">% from the integrator to the states</span>
+<span class="n">xi_isd</span>  <span class="p">=</span> <span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">xi_is1</span>  <span class="p">=</span> <span class="n">x</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+
+<span class="c">% auxiliar</span>
+<span class="n">e_isd</span> <span class="p">=</span>  <span class="n">i_sd_ref</span> <span class="o">-</span> <span class="n">i_sd</span><span class="p">;</span>
+<span class="n">e_isq</span> <span class="p">=</span>  <span class="n">i_sq_ref</span> <span class="o">-</span> <span class="n">i_sq</span><span class="p">;</span>
+
+
+<span class="c">% derivatives</span>
+<span class="n">dxi_isd</span>  <span class="p">=</span> <span class="n">e_isd</span><span class="p">;</span>
+<span class="n">dxi_isq</span>  <span class="p">=</span> <span class="n">e_isq</span><span class="p">;</span>
+
+
+<span class="c">% auxiliar</span>
+<span class="n">u_d</span> <span class="p">=</span> <span class="n">K_p</span><span class="o">*</span><span class="n">e_isd</span> <span class="o">+</span> <span class="n">K_i</span><span class="o">*</span><span class="n">xi_isd</span><span class="p">;</span>
+<span class="n">u_d</span> <span class="p">=</span> <span class="n">K_p</span><span class="o">*</span><span class="n">e_isq</span> <span class="o">+</span> <span class="n">K_i</span><span class="o">*</span><span class="n">xi_isq</span><span class="p">;</span>
+
+
+<span class="c">% outputs</span>
+<span class="n">eta_d</span>  <span class="p">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">v_dc</span> <span class="o">*</span> <span class="p">(</span> <span class="n">u_d</span>  <span class="o">-</span> <span class="n">L</span> <span class="o">*</span> <span class="n">omega</span> <span class="o">*</span> <span class="n">i_sq</span>  <span class="o">+</span> <span class="n">v_sd</span><span class="p">);</span>
+<span class="n">eta_q</span>  <span class="p">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">v_dc</span> <span class="o">*</span> <span class="p">(</span> <span class="n">u_q</span>  <span class="o">+</span> <span class="n">L</span> <span class="o">*</span> <span class="n">omega</span> <span class="o">*</span> <span class="n">i_sd</span>  <span class="o">+</span> <span class="n">v_sq</span><span class="p">);</span>
+
+<span class="c">% from derivatives to the integrator</span>
+<span class="n">dx</span> <span class="p">=</span> <span class="p">[</span><span class="n">dxi_isd</span><span class="p">,</span><span class="n">dxi_isq</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="vsc.html">Voltage Source Conveter (VSC)</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="lcl_filter.html">(Doing) VSC 3-wire with LCL-Filter</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, USE.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

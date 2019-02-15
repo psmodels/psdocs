@@ -11,7 +11,7 @@ PSDocs documentation
    :caption: Contents:
 
    commons
-   vsc
+   vsc/vsc
 
 
 Indices and tables
