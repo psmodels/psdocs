@@ -4,8 +4,8 @@ Transforms
 Park Transform
 --------------
 
-abc 2 dq
-''''''''
+abc to dq
+'''''''''
 
 .. code-block:: matlab
 
@@ -13,8 +13,8 @@ abc 2 dq
                   [-sin(theta),-sin(theta-2.0/3.0*pi),-sin(theta+2.0/3.0*pi)]]
 
 
-dq 2 abc
-''''''''
+dq to abc
+'''''''''
 
 .. code-block:: matlab
 
