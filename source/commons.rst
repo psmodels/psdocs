@@ -18,7 +18,7 @@ dq 2 abc
 
 .. code-block:: matlab
 
-    T_p_inv = [[          cos(theta),          -sin(theta)],
+    T_p_inv = [[          cos(theta),              -sin(theta)],
                [ cos(theta-2.0/3.0*pi), -sin(theta-2.0/3.0*pi)],
                [ cos(theta+2.0/3.0*pi), -sin(theta+2.0/3.0*pi)]]
 
