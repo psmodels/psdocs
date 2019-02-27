@@ -5,25 +5,36 @@
 .. code-block:: matlab
 
      
-    function [i_sd,i_sq,v_dc,dx] = vsc_l_dq(v_sd,v_sq,omega,params,x)
+    function [i_sd,i_sq,v_dc,dx] = fcn(eta_d,eta_q,v_sd,v_sq,i_dc,omega,params,x)
 
     % parameters
-    R_s = params(1);
-    L_s = params(2);
+    R_t = params(1);
+    L_t = params(2);
+    R_s = params(3);
+    L_s = params(4);
+    C_m = params(5);
+    C_dc = params(6);
 
     % from the integrator to the states
-    i_d  = x(1);
-    i_q  = x(2);
-    v_dc = x(3);
-
+    i_td = x(1);
+    i_tq = x(2);
+    i_sd = x(3);
+    i_sq = x(4);
+    v_md = x(5);
+    v_mq = x(6);
+    v_dc = x(7);
  
     % derivatives
-    di_d  = 1/L_s*(v_sd + L_s*omega*i_q - R_s*i_sd - v_sd);
-    di_q  = 1/L_s*(v_sq - L_s*omega*i_d - R_s*i_sq - v_sq);
-    dv_dc = 1/C_dc * ( 0.5 * (eta_d *i_sd  + eta_q * i_tq  - i_dc )
+    di_sd = 1/L_s*(v_md + L_s*omega*i_sq - R_s*i_sd - v_sd);
+    di_sq = 1/L_s*(v_mq - L_s*omega*i_sd - R_s*i_sq - v_sq);
+    dv_md = 1/C_m*(i_td - i_sd + omega*C*v_mq);
+    dv_mq = 1/C_m*(i_tq - i_sq - omega*C*v_md);
+    di_td = 1/L_t*(eta_d*v_dc/2 + L_t*omega*i_tq - R_t*i_td - v_md);
+    di_tq = 1/L_t*(eta_q*v_dc/2 - L_t*omega*i_td - R_t*i_tq - v_mq);
+    dv_dc = 1/C_dc*(0.5*(eta_d*i_td + eta_q*i_tq - i_dc));
     
     % from derivatives to the integrator
-    dx = [di_d,di_q,dv_dc];
+    dx = [di_td,di_tq,di_sd,di_sq,dv_md,dv_mq,dv_dc];
 
 
 
