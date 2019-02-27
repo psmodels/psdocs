@@ -5,7 +5,7 @@
 .. code-block:: matlab
 
      
-    function [i_sd,i_sq,v_dc,dx] = fcn(eta_d,eta_q,v_sd,v_sq,i_dc,omega,params,x)
+    function [i_sd,i_sq,v_dc,dx] = vsc_lcl_dq(eta_d,eta_q,v_sd,v_sq,i_dc,omega,params,x)
 
     % parameters
     R_t = params(1);
