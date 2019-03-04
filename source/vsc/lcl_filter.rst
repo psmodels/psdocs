@@ -29,9 +29,9 @@
     di_sq = 1/L_s*(v_mq - L_s*omega*i_sd - R_s*i_sq - v_sq);
     dv_md = 1/C_m*(i_td - i_sd + omega*C*v_mq);
     dv_mq = 1/C_m*(i_tq - i_sq - omega*C*v_md);
-    di_td = 1/L_t*(eta_d*v_dc/2 + L_t*omega*i_tq - R_t*i_td - v_md);
-    di_tq = 1/L_t*(eta_q*v_dc/2 - L_t*omega*i_td - R_t*i_tq - v_mq);
-    dv_dc = 1/C_dc*(0.5*(eta_d*i_td + eta_q*i_tq - i_dc));
+    di_td = 1/L_t*(eta_d*v_dc*0.5 + L_t*omega*i_tq - R_t*i_td - v_md);
+    di_tq = 1/L_t*(eta_q*v_dc*0.5 - L_t*omega*i_td - R_t*i_tq - v_mq);
+    dv_dc = 1/C_dc*(i_dc - 0.75*(eta_d*i_sd + eta_q*i_sq));
     
     % from derivatives to the integrator
     dx = [di_td,di_tq,di_sd,di_sq,dv_md,dv_mq,dv_dc];
