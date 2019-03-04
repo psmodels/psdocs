@@ -13,14 +13,14 @@ VSC 3-wire with L-Filter
     C_dc = params(3);
 
     % from the integrator to the states
-    i_sd  = x(1);
-    i_sq  = x(2);
+    i_sd = x(1);
+    i_sq = x(2);
     v_dc = x(3);
  
     % derivatives
-    di_sd = 1/L_s*(eta_d*v_dc/2 + L_s*omega*i_sq - R_s*i_sd - v_sd);
-    di_sq = 1/L_s*(eta_q*v_dc/2 - L_s*omega*i_sd - R_s*i_sq - v_sq);
-    dv_dc = 1/C_dc*(0.5*(eta_d*i_sd + eta_q*i_sq - i_dc));
+    di_sd = 1/L_s*(eta_d*v_dc*0.5 + L_s*omega*i_sq - R_s*i_sd - v_sd);
+    di_sq = 1/L_s*(eta_q*v_dc*0.5 - L_s*omega*i_sd - R_s*i_sq - v_sq);
+    dv_dc = 1/C_dc*(i_dc - 0.75*(eta_d*i_sd + eta_q*i_sq));
     
     % from derivatives to the integrator
     dx = [di_sd,di_sq,dv_dc];
@@ -60,8 +60,8 @@ Control CTRL1 VSC 3-wire L-filter
     u_q = K_p*e_isq + K_i*xi_isq;
     
     % outputs
-    eta_d = 2/v_dc*(u_d - L_s *omega*i_sq + v_sd);
-    eta_q = 2/v_dc*(u_q + L_s *omega*i_sd + v_sq);
+    eta_d = 2/v_dc*(u_d - L_s*omega*i_sq + v_sd);
+    eta_q = 2/v_dc*(u_q + L_s*omega*i_sd + v_sq);
 
     % from derivatives to the integrator
     dx = [dxi_isd,dxi_isq];
