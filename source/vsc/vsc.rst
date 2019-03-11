@@ -8,6 +8,7 @@ Voltage Source Conveter (VSC)
 
    l_filter
    lcl_filter
+   lc_filter
 
 
 
